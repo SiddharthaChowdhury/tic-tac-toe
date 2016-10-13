@@ -24,7 +24,6 @@
 			display: flex;
 			justify-content: center;
 			align-items: center;
-			/*display: inline-flex;*/
 			margin: 0px !important;
 		}
 		.block:hover{
@@ -63,7 +62,13 @@
 					toggle = toggle == 0 ? 1 : 0;
 				else{
 					document.querySelector('.status').innerHTML = "Winner = "+symbol[toggle];
-
+					var f = document.querySelectorAll('.block');
+					console.log(f)
+					for(var i in f){
+						if(f[i].innerHTML == ""){
+							f[i].innerHTML = ' '
+						}
+					}
 				}
 			} 
 		});
@@ -91,23 +96,19 @@
 			}
 			if(cur_combo.length < 3)
 				return false;
-			var is = false;
-			is = wombos.find(function(combo){
-				var flag = 3
-			    for(var i in cur_combo) {
-			        if(cur_combo[i] in combo){
-			            flag --;
-			        }
-			    }
-			    if(flag ==0)
-			    	return true;
-			});
-
-			if(is){
-				var blocks = document.querySelectorAll('.block');
-				for(var i in cur_combo)
-					blocks[cur_combo[i]].style.background = 'green'
-				return true;
+			for(var i in wombos){
+				var flag = 0;
+				for(var j in wombos[i]){
+					if( cur_combo.indexOf(wombos[i][j].toString()) > -1 )
+						flag ++;
+				}
+				if( flag == 3 ){
+					console.log("WINNING Combo: ",wombos[i])
+					var blocks = document.querySelectorAll('.block');
+					for(var s in wombos[i])
+						blocks[wombos[i][s]].style.background = 'green'
+					return true;
+				}
 			}
 			return false;
 		}
