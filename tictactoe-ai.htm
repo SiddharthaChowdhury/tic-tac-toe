@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>tic tac toe</title>
+	<style type="text/css">
+		#board{
+			width: 300px;
+			height: 300px;
+			/*border: 2px solid #c0c0c0;*/
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			display: flex;
+			flex-direction: row;
+			flex-wrap: wrap;
+			justify-content: flex-start;
+		}
+		.block{
+			width: 100px;
+			height: 100px;
+			/*border: 1px solid #e0e0e0;*/
+			border: 1px solid #000000;
+
+			box-sizing: border-box;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			margin: 0px !important;
+		}
+		.block:hover{
+			background-color: #c0c0c0;
+			cursor: pointer;
+		}
+		.bottom-dash{
+			display: flex;
+			height: 50px;
+		}
+		.options{
+			padding: 15px 20px 0px 0px;
+		}
+	</style>
+</head>
+<body>
+	
+	<div id="board">
+		<div class="block"></div>
+		<div class="block"></div>
+		<div class="block"></div>
+
+		<div class="block"></div>
+		<div class="block"></div>
+		<div class="block"></div>
+
+		<div class="block"></div>
+		<div class="block"></div>
+		<div class="block"></div>
+		<div class="bottom-dash">
+			<div class="options status"></div>
+			<div class="options">
+				<input type="checkbox" id="ai-toggle">	Auto
+			</div>
+			<div class="options">
+				<button id="reset-board">Reset</button>
+			</div>
+		</div>
+	</div>
+
+	<script type="text/javascript">
+		var toggle = 0,
+		symbol = ["X", "O"],
+		/*
+			0	1	2
+			3	4	5
+			6	7	8
+		*/
+		wombos = [
+			[0,1,2], [3,4,5], [6,7,8], // H orizontals
+			[0,3,6], [1,4,7], [2,5,8], // V erticals
+			[0,4,8], [2,4,6]		   // D iagonals
+		];
+
+		document.querySelector('#board').addEventListener('click', function(e){
+			if(e.target.innerHTML == ""){
+				e.target.innerHTML = symbol[toggle];
+				if(!isWinner( symbol[toggle] ))
+					toggle = toggle == 0 ? 1 : 0;
+				else{
+					document.querySelector('.status').innerHTML = "Winner = "+symbol[toggle];
+					var f = document.querySelectorAll('.block');
+					console.log(f)
+					for(var i in f){
+						if(f[i].innerHTML == ""){
+							f[i].innerHTML = ' '
+						}
+					}
+				}
+			} 
+		});
+		
+		function isWinner(symbol){
+			var x = Array.prototype.slice.call(document.querySelectorAll('.block'));
+			var vals = x.map(function(block){
+				return block.innerHTML
+			});
+
+			var cur_combo = [];
+			for(var i in vals){
+				if(vals[i] == symbol)
+					cur_combo.push(i);
+			}
+			if(cur_combo.length < 3)
+				return false;
+			for(var i in wombos){
+				var flag = 0;
+				for(var j in wombos[i]){
+					if( cur_combo.indexOf(wombos[i][j].toString()) > -1 )
+						flag ++;
+				}
+				if( flag == 3 ){
+					console.log("WINNING Combo: ",wombos[i])
+					var blocks = document.querySelectorAll('.block');
+					for(var s in wombos[i])
+						blocks[wombos[i][s]].style.background = 'green'
+					return true;
+				}
+			}
+			return false;
+		}
+			
+	</script>
+</body>
+</html>
