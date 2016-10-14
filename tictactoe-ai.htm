@@ -3,14 +3,16 @@
 <head>
 	<title>tic tac toe</title>
 	<style type="text/css">
-		#board{
+		#wrapper{
 			width: 300px;
 			height: 300px;
-			/*border: 2px solid #c0c0c0;*/
 			position: absolute;
 			top: 50%;
 			left: 50%;
 			transform: translate(-50%, -50%);
+			
+		}
+		#board{
 			display: flex;
 			flex-direction: row;
 			flex-wrap: wrap;
@@ -37,38 +39,41 @@
 			height: 50px;
 		}
 		.options{
-			padding: 15px 20px 0px 0px;
+			padding: 15px 10px 0px 0px;
 		}
 	</style>
 </head>
 <body>
-	
-	<div id="board">
-		<div class="block"></div>
-		<div class="block"></div>
-		<div class="block"></div>
+	<div id="wrapper">
+		<div id="board" >
+			<div class="block"></div>
+			<div class="block"></div>
+			<div class="block"></div>
 
-		<div class="block"></div>
-		<div class="block"></div>
-		<div class="block"></div>
+			<div class="block"></div>
+			<div class="block"></div>
+			<div class="block"></div>
 
-		<div class="block"></div>
-		<div class="block"></div>
-		<div class="block"></div>
+			<div class="block"></div>
+			<div class="block"></div>
+			<div class="block"></div>
+		</div>
 		<div class="bottom-dash">
 			<div class="options status"></div>
 			<div class="options">
-				<input type="checkbox" id="ai-toggle">	Auto
+				<input type="checkbox" value="X" class="ai-toggle">	autoX
+				<input type="checkbox" value="Y" class="ai-toggle">	autoY
 			</div>
 			<div class="options">
 				<button id="reset-board">Reset</button>
 			</div>
 		</div>
 	</div>
-
 	<script type="text/javascript">
 		var toggle = 0,
-		symbol = ["X", "O"],
+		aiX = 0,
+		aiY = 0,
+		turn = ["X", "O"],
 		/*
 			0	1	2
 			3	4	5
@@ -82,11 +87,11 @@
 
 		document.querySelector('#board').addEventListener('click', function(e){
 			if(e.target.innerHTML == ""){
-				e.target.innerHTML = symbol[toggle];
-				if(!isWinner( symbol[toggle] ))
+				e.target.innerHTML = turn[toggle];
+				if(!isWinner( turn[toggle] ))
 					toggle = toggle == 0 ? 1 : 0;
 				else{
-					document.querySelector('.status').innerHTML = "Winner = "+symbol[toggle];
+					document.querySelector('.status').innerHTML = "Winner = "+turn[toggle];
 					var f = document.querySelectorAll('.block');
 					console.log(f)
 					for(var i in f){
@@ -97,18 +102,22 @@
 				}
 			} 
 		});
-		
-		function isWinner(symbol){
+		function getCurrentCombo(turn){
 			var x = Array.prototype.slice.call(document.querySelectorAll('.block'));
 			var vals = x.map(function(block){
 				return block.innerHTML
 			});
-
 			var cur_combo = [];
 			for(var i in vals){
-				if(vals[i] == symbol)
+				if(vals[i] == turn)
 					cur_combo.push(i);
 			}
+			return cur_combo;
+		}
+		function isWinner(turn){
+			
+			var cur_combo = getCurrentCombo(turn);
+			
 			if(cur_combo.length < 3)
 				return false;
 			for(var i in wombos){
@@ -127,7 +136,40 @@
 			}
 			return false;
 		}
+		
+		// -------------------------- AI IMPLEMENTATION =>
+		var auto_chk = document.getElementsByClassName('ai-toggle')
+		
+		for(var i = 0; i< auto_chk.length; i++){
+				auto_chk[i].addEventListener('change', init_ai);
+				// console.log(auto_chk[o])
+		}
+		function init_ai(){
 			
+			if(this.checked){
+				console.log(this, " is checked")
+				if(this.value == "X" )
+					aiX = 1;
+				else
+					aiY = 1;
+				autoNextStep(this.value)
+			}		
+			else{
+				// turn off AI
+				console.log(this, " is UNchecked")
+				if(this.value == "X" )
+					aiX = 0;
+				else
+					aiY = 0;
+			}
+		}
+		function autoNextStep(_turn){
+			if(aiX == 1 || aiY == 1 ){
+				alert(_turn);
+				var cur_combo = getCurrentCombo(_turn);
+				console.log(cur_combo);
+			}
+		}
 	</script>
 </body>
 </html>
