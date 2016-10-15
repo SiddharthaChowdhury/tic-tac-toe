@@ -103,6 +103,8 @@
 				}
 			} 
 		});
+		
+
 		function getCurrentCombo(turn){
 			var x = Array.prototype.slice.call(document.querySelectorAll('.block'));
 			var vals = x.map(function(block){
@@ -115,6 +117,7 @@
 			}
 			return cur_combo;
 		}
+
 		function isWinner(turn){
 			
 			var cur_combo = getCurrentCombo(turn);
@@ -171,74 +174,35 @@
 					toggle = toggle == 0 ? 1 : 0;
 				}
 				else{
-					// find and stack win combos 
-					// check if next step is possible according to combos in stack
-					// if none of the combos are possible fill any of the left block and make it draw.
-					
+					/* ================================= RULES ======================================== */
+					// 1. Find and stack win combos 
+					//		` 1.1	Get all possible wombos according current state of turn of THIS (X/O) in an array (say POSBL_WINS)
+					//		` 1.2	From POSBL_WINS eliminate combos that are impossible 
+					// 2. If POSBL_WINS is empty then fill any one of the empty block on the game board
+					// 3. Else start plotting the first POSBL_WINS array
+					/* ================================================================================ */
+
+					// 1 Finding and stacking win combos
+					//		` 1.1	Getting all possible wombos (winning combos) 
+					var possible_wins = []
+					var cur_combo = getCurrentCombo(turn_of);
+					for(var i in wombos){
+						var flag = 0;
+						for(var j in cur_combo){
+							if(wombos[i].indexOf(parseInt(cur_combo[j])) > -1 )
+								flag ++;
+						}
+						if(flag > 0){
+							possible_wins.push(wombos[i]) 
+						}
+					}
+					//	` 1.2 Elimination of impossibles
+					var board_sene = []
+					console.log(possible_wins);
 				}
 			}
 		}
-		// document.querySelector('#ai-toggleX').addEventListener('change', function(e){
-		// 	if(this.checked){
-		// 		aiX = 1;
-		// 		autoNextStep('X');
-		// 	}
-		// 	else
-		// 		aiX = 0;
-		// });
 
-		// document.querySelector('#ai-toggleO').addEventListener('change', function(e){
-		// 	if(this.checked){
-		// 		aiO = 1;
-		// 		autoNextStep('X');
-		// 	}
-		// 	else
-		// 		aiO = 0;
-		// });
-
-		// function autoNextStep(_turn){
-		// 	if(aiX == 1 || aiO == 1 ){
-		// 		var turn_of = turn[toggle];
-		// 		if(_turn == turn_of){
-		// 			// AI Logic
-		// 			var cur_combo = getCurrentCombo(_turn);
-		// 			console.log("Combo: "+_turn+"is ",cur_combo);
-		// 			var best_win = {};
-		// 			if( cur_combo.length == 0 ){
-		// 				// var rnd_indx = Math.floor((Math.rand()*empty_blocks.length) + 0)
-		// 				// wombos[rnd_indx][0]
-		// 				var x = Array.prototype.slice.call(document.querySelectorAll('.block'));
-		// 				var vals = x.map(function(block){
-		// 					return block.innerHTML
-		// 				});
-		// 				var empty_blocks = []
-		// 				for(var i =0; i< vals.length; i++){
-		// 					if( vals[i] == "" )
-		// 						empty_blocks.push(i);
-		// 				}
-		// 				var blocks = document.querySelectorAll('.block')
-		// 				blocks[Math.floor((Math.random()*empty_blocks.length) + 0)].innerHTML = _turn
-		// 			}
-		// 			else{
-
-		// 			}
-		// 			// for(var i in wombos){
-		// 			// 	var flag = 0;
-		// 			// 	for(var j in wombos[i]){
-		// 			// 		if( cur_combo.indexOf(wombos[i][j].toString()) > -1 )
-		// 			// 			flag ++;
-		// 			// 	}
-		// 			// 	// if( flag == 3 ){
-		// 			// 	// 	console.log("WINNING Combo: ",wombos[i])
-		// 			// 	// 	var blocks = document.querySelectorAll('.block');
-		// 			// 	// 	for(var s in wombos[i])
-		// 			// 	// 		blocks[wombos[i][s]].style.background = 'green'
-		// 			// 	// 	return true;
-		// 			// 	// }
-		// 			// }
-		// 		}
-		// 	}
-		// }
 	</script>
 </body>
 </html>
