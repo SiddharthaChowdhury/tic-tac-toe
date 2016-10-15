@@ -62,7 +62,7 @@
 			<div class="options status"></div>
 			<div class="options">
 				<input type="checkbox" value="X" class="ai-toggle">	autoX
-				<input type="checkbox" value="Y" class="ai-toggle">	autoY
+				<input type="checkbox" value="O" class="ai-toggle">	autoO
 			</div>
 			<div class="options">
 				<button id="reset-board">Reset</button>
@@ -71,8 +71,7 @@
 	</div>
 	<script type="text/javascript">
 		var toggle = 0,
-		aiX = 0,
-		aiY = 0,
+		ai = {'X': 0, 'O': 0}
 		turn = ["X", "O"],
 		/*
 			0	1	2
@@ -88,8 +87,10 @@
 		document.querySelector('#board').addEventListener('click', function(e){
 			if(e.target.innerHTML == ""){
 				e.target.innerHTML = turn[toggle];
-				if(!isWinner( turn[toggle] ))
+				if(!isWinner( turn[toggle] )){
 					toggle = toggle == 0 ? 1 : 0;
+					autoFillBoard(); // will run auto if any enabled.
+				}
 				else{
 					document.querySelector('.status').innerHTML = "Winner = "+turn[toggle];
 					var f = document.querySelectorAll('.block');
@@ -138,38 +139,106 @@
 		}
 		
 		// -------------------------- AI IMPLEMENTATION =>
-		var auto_chk = document.getElementsByClassName('ai-toggle')
-		
-		for(var i = 0; i< auto_chk.length; i++){
-				auto_chk[i].addEventListener('change', init_ai);
-				// console.log(auto_chk[o])
+		var autos = document.querySelectorAll('.ai-toggle');
+		for(var i = 0; i< autos.length; i++){
+			autos[i].addEventListener('change', function(e){
+				if(this.checked)
+					ai[e.target.value] = 1;
+				else
+					ai[e.target.value] = 0;
+				autoFillBoard();
+			});
 		}
-		function init_ai(){
-			
-			if(this.checked){
-				console.log(this, " is checked")
-				if(this.value == "X" )
-					aiX = 1;
-				else
-					aiY = 1;
-				autoNextStep(this.value)
-			}		
-			else{
-				// turn off AI
-				console.log(this, " is UNchecked")
-				if(this.value == "X" )
-					aiX = 0;
-				else
-					aiY = 0;
+
+		function autoFillBoard(){
+			var turn_of = turn[toggle];
+			if(ai[turn_of]){
+				// AI logic
+				var cur_combo = getCurrentCombo(turn_of);
+				var best_win = {};
+				if( cur_combo.length == 0 ){ // For first entry
+					var x = Array.prototype.slice.call(document.querySelectorAll('.block'));
+					var vals = x.map(function(block){
+						return block.innerHTML
+					});
+					var empty_blocks = []
+					for(var i =0; i< vals.length; i++){
+						if( vals[i] == "" )
+							empty_blocks.push(i);
+					}
+					var blocks = document.querySelectorAll('.block')
+					blocks[Math.floor((Math.random()*empty_blocks.length) + 0)].innerHTML = turn_of
+					toggle = toggle == 0 ? 1 : 0;
+				}
+				else{
+					// find and stack win combos 
+					// check if next step is possible according to combos in stack
+					// if none of the combos are possible fill any of the left block and make it draw.
+					
+				}
 			}
 		}
-		function autoNextStep(_turn){
-			if(aiX == 1 || aiY == 1 ){
-				alert(_turn);
-				var cur_combo = getCurrentCombo(_turn);
-				console.log(cur_combo);
-			}
-		}
+		// document.querySelector('#ai-toggleX').addEventListener('change', function(e){
+		// 	if(this.checked){
+		// 		aiX = 1;
+		// 		autoNextStep('X');
+		// 	}
+		// 	else
+		// 		aiX = 0;
+		// });
+
+		// document.querySelector('#ai-toggleO').addEventListener('change', function(e){
+		// 	if(this.checked){
+		// 		aiO = 1;
+		// 		autoNextStep('X');
+		// 	}
+		// 	else
+		// 		aiO = 0;
+		// });
+
+		// function autoNextStep(_turn){
+		// 	if(aiX == 1 || aiO == 1 ){
+		// 		var turn_of = turn[toggle];
+		// 		if(_turn == turn_of){
+		// 			// AI Logic
+		// 			var cur_combo = getCurrentCombo(_turn);
+		// 			console.log("Combo: "+_turn+"is ",cur_combo);
+		// 			var best_win = {};
+		// 			if( cur_combo.length == 0 ){
+		// 				// var rnd_indx = Math.floor((Math.rand()*empty_blocks.length) + 0)
+		// 				// wombos[rnd_indx][0]
+		// 				var x = Array.prototype.slice.call(document.querySelectorAll('.block'));
+		// 				var vals = x.map(function(block){
+		// 					return block.innerHTML
+		// 				});
+		// 				var empty_blocks = []
+		// 				for(var i =0; i< vals.length; i++){
+		// 					if( vals[i] == "" )
+		// 						empty_blocks.push(i);
+		// 				}
+		// 				var blocks = document.querySelectorAll('.block')
+		// 				blocks[Math.floor((Math.random()*empty_blocks.length) + 0)].innerHTML = _turn
+		// 			}
+		// 			else{
+
+		// 			}
+		// 			// for(var i in wombos){
+		// 			// 	var flag = 0;
+		// 			// 	for(var j in wombos[i]){
+		// 			// 		if( cur_combo.indexOf(wombos[i][j].toString()) > -1 )
+		// 			// 			flag ++;
+		// 			// 	}
+		// 			// 	// if( flag == 3 ){
+		// 			// 	// 	console.log("WINNING Combo: ",wombos[i])
+		// 			// 	// 	var blocks = document.querySelectorAll('.block');
+		// 			// 	// 	for(var s in wombos[i])
+		// 			// 	// 		blocks[wombos[i][s]].style.background = 'green'
+		// 			// 	// 	return true;
+		// 			// 	// }
+		// 			// }
+		// 		}
+		// 	}
+		// }
 	</script>
 </body>
 </html>
