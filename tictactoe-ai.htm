@@ -104,6 +104,13 @@
 			} 
 		});
 		
+		function getBoardScene(){
+			var x = Array.prototype.slice.call(document.querySelectorAll('.block'));
+			var vals = x.map(function(block){
+				return block.innerHTML
+			});
+			return vals;
+		}
 
 		function getCurrentCombo(turn){
 			var x = Array.prototype.slice.call(document.querySelectorAll('.block'));
@@ -160,13 +167,10 @@
 				var cur_combo = getCurrentCombo(turn_of);
 				var best_win = {};
 				if( cur_combo.length == 0 ){ // For first entry
-					var x = Array.prototype.slice.call(document.querySelectorAll('.block'));
-					var vals = x.map(function(block){
-						return block.innerHTML
-					});
+					var board_vals = getBoardScene();
 					var empty_blocks = []
-					for(var i =0; i< vals.length; i++){
-						if( vals[i] == "" )
+					for(var i =0; i< board_vals.length; i++){
+						if( board_vals[i] == "" )
 							empty_blocks.push(i);
 					}
 					var blocks = document.querySelectorAll('.block')
@@ -184,7 +188,7 @@
 
 					// 1 Finding and stacking win combos
 					//		` 1.1	Getting all possible wombos (winning combos) 
-					var possible_wins = []
+					var possible_wins = {}
 					var cur_combo = getCurrentCombo(turn_of);
 					for(var i in wombos){
 						var flag = 0;
@@ -193,12 +197,18 @@
 								flag ++;
 						}
 						if(flag > 0){
-							possible_wins.push(wombos[i]) 
+							possible_wins[i] = wombos[i] 
 						}
 					}
+					console.log(possible_wins)
 					//	` 1.2 Elimination of impossibles
-					var board_sene = []
-					console.log(possible_wins);
+					var board_sene = getBoardScene();
+					for( var i in board_sene ){
+						for( var j in possible_wins ){
+							
+						}
+					}	
+					// console.log(possible_wins);
 				}
 			}
 		}

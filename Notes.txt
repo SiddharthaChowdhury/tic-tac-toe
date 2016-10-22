@@ -1,0 +1,7 @@
+AI
+
+AI should be in following priority:
+
+Check if after this turn the opponent wins
+	1.1 if YES then cease the opponents victory
+	1.2 else find your next best possible victory pattern
